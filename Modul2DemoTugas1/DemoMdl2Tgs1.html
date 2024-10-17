@@ -1,0 +1,143 @@
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e0e0e0;
+            margin: 0;
+        }
+        .calculator {
+            width: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0px 10px 30px rgba(248, 3, 3, 0.2);
+        }
+        .display {
+            background-color: #ffffff;
+            color: rgb(22, 13, 13);
+            font-size: 48px;
+            text-align: right;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .button {
+            background-color: #e41118;
+            border: 1px solid #e11010;
+            color: rgb(18, 11, 11);
+            font-size: 24px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .button.operator {
+            background-color: #fffffa;
+        }
+        .button.zero {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <div class="button" onclick="clearDisplay()">AC</div>
+            <div class="button" onclick="appendOperator('')">^</div>
+            <div class="button" onclick="appendOperator('%')">%</div>
+            <div class="button operator" onclick="appendOperator('/')">÷</div>
+            <div class="button" onclick="appendNumber('7')">7</div>
+            <div class="button" onclick="appendNumber('8')">8</div>
+            <div class="button" onclick="appendNumber('9')">9</div>
+            <div class="button operator" onclick="appendOperator('*')">×</div>
+            <div class="button" onclick="appendNumber('4')">4</div>
+            <div class="button" onclick="appendNumber('5')">5</div>
+            <div class="button" onclick="appendNumber('6')">6</div>
+            <div class="button operator" onclick="appendOperator('-')">−</div>
+            <div class="button" onclick="appendNumber('1')">1</div>
+            <div class="button" onclick="appendNumber('2')">2</div>
+            <div class="button" onclick="appendNumber('3')">3</div>
+            <div class="button operator" onclick="appendOperator('+')">+</div>
+            <div class="button zero" onclick="appendNumber('0')">0</div>
+            <div class="button" onclick="appendNumber('.')">.</div>
+            <div class="button operator" onclick="calculate()">=</div>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '';
+        let operator = '';
+        let previousInput = '';
+
+        function appendNumber(number) {
+            if (currentInput === '0' && number === '0') return;
+            if (currentInput === '0' && number !== '.') currentInput = '';
+            currentInput += number;
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (currentInput === '' && previousInput === '') return;
+            if (currentInput !== '') {
+                if (previousInput !== '') {
+                    calculate();
+                }
+                previousInput = currentInput;
+                currentInput = '';
+            }
+            operator = op;
+            updateDisplay();
+        }
+
+        function calculate() {
+            if (currentInput === '' || previousInput === '' || operator === '') return;
+            let result;
+            switch (operator) {
+                case '+':
+                    result = parseFloat(previousInput) + parseFloat(currentInput);
+                    break;
+                case '-':
+                    result = parseFloat(previousInput) - parseFloat(currentInput);
+                    break;
+                case '*':
+                    result = parseFloat(previousInput) * parseFloat(currentInput);
+                    break;
+                case '/':
+                    result = parseFloat(previousInput) / parseFloat(currentInput);
+                    break;
+                case '':
+                    result = Math.pow(parseFloat(previousInput), parseFloat(currentInput));
+                    break;
+                case '%':
+                    result = parseFloat(previousInput) % parseFloat(currentInput);
+                    break;
+                default:
+                    return;
+            }
+            currentInput = result.toString();
+            operator = '';
+            previousInput = '';
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '';
+            operator = '';
+            previousInput = '';
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            display.innerText = currentInput || previousInput || '0';
+        }
+    </script>
+</body>
+</html>
+
